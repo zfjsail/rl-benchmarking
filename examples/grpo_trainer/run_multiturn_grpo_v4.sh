@@ -66,7 +66,7 @@ python3 -m verl.trainer.main_ppo \
     algorithm.use_kl_in_reward=False \
     trainer.critic_warmup=0 \
     trainer.val_before_train=False \
-    trainer.logger='["console","wandb"]' \
+    trainer.logger='["console"]' \
     trainer.project_name='multiturn_grpo_v2' \
     trainer.experiment_name='multiturn_grpo_v2' \
     trainer.n_gpus_per_node=8 \
