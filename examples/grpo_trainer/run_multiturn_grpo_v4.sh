@@ -45,6 +45,7 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.actor.fsdp_config.param_offload=$OFFLOAD \
     actor_rollout_ref.actor.fsdp_config.optimizer_offload=$OFFLOAD \
     actor_rollout_ref.actor.fsdp_config.model_dtype=bfloat16 \
+    actor_rollout_ref.actor.checkpoint.save_contents='["optimizer","extra"]' \
     actor_rollout_ref.rollout.temperature=1.0 \
     actor_rollout_ref.rollout.top_p=1.0 \
     actor_rollout_ref.rollout.top_k=-1 \
