@@ -7,7 +7,7 @@ from peft import PeftModel
 base_model_path = "Qwen/Qwen3-8B"
 # lora_model_path = "outputs/sft_turn20/global_step_140/huggingface/lora_adapter"
 lora_model_path = "zfjsail/qwen3-8b-lora"
-output_path = "lora"
+output_path = "base_model"
 
 torch_dtype = torch.float16  # 或 bfloat16 / float32
 device_map = "auto"
