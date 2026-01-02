@@ -1,0 +1,5 @@
+interaction:
+  - name: "multiturn"
+    class_name: "verl.interactions.multiturn_interaction.MultiTurnInteraction"
+    config:
+      reward_type: "cls"  # 'ce' (Cross-Entropy) 或 'cls' (Classification)

@@ -1,0 +1,8 @@
+# Interaction configuration for Multiturn Agent format multi-turn training
+# In this format, all questions are given upfront and agent generates answers sequentially
+
+interactions:
+  - name: multiturn_agent
+    module_path: verl.interactions.multiturn_agent_interaction
+    class_name: MultiTurnAgentInteraction
+    config: {}

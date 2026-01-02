@@ -1,0 +1,168 @@
+# Multi-Turn Dialog Interaction Configuration
+# This configuration demonstrates how to set up VERL for multi-turn dialog tasks
+# with SGLang rollout backend and automatic reward calculation.
+
+# Model configuration
+actor_rollout_ref:
+  model:
+    # Model path - replace with your actual model
+    model_path: meta-llama/Llama-2-7b-hf
+    # Or use a quantized version for faster inference:
+    # model_path: meta-llama/Llama-2-7b-chat-hf
+    
+    # Tokenizer configuration
+    tokenizer_path: meta-llama/Llama-2-7b-hf
+    tokenizer_type: transformers
+    trust_remote_code: true
+
+  # Rollout configuration - SGLang backend for multiturn support
+  rollout:
+    # Use SGLang backend instead of vLLM for multiturn support
+    mode: sglang
+    
+    # Batch size for rollout
+    batch_size: 16
+    
+    # Sequence lengths
+    prompt_length: 512
+    response_length: 512
+    max_model_len: 2048
+    
+    # Sampling parameters
+    temperature: 0.7
+    top_p: 0.9
+    top_k: 50
+    
+    # SGLang specific settings
+    num_gpus_per_node: 1
+    tensor_parallel_size: 1
+    
+  # Interaction configuration
+  interaction:
+    # Use MultiTurnDialogInteraction for multi-turn dialog tasks
+    type: multiturn_dialog
+    
+    # Interaction configuration dict
+    config: {}
+
+# Multi-turn configuration
+multiturn:
+  # Enable multi-turn mode - essential for MultiTurnDialogInteraction
+  enable: true
+  
+  # Maximum turns per interaction
+  max_turns: 10
+  
+  # Whether to cache context between turns
+  use_context_cache: true
+  
+  # Turn timeout (seconds)
+  turn_timeout: 300
+
+# Data configuration
+data:
+  # Use custom multi-turn dialog dataset
+  train_data_path: examples/data_preprocess/multiturn.py
+  
+  # Data format specification
+  data_format:
+    type: multiturn_dialog
+    # Expected keys in each data item:
+    # - data_source: "multiturn_dialog"
+    # - reward_model: {"style": "rule"}
+    # - messages: [...] (chat format)
+  
+  # Data preprocessing
+  preprocessing:
+    # Number of workers for data loading
+    num_workers: 4
+    
+    # Whether to cache processed data
+    cache_processed_data: true
+
+# Reward configuration
+reward:
+  # Reward model type: "rule" for exact matching
+  type: rule
+  
+  # Reward parameters
+  config:
+    # Match type: "exact" for exact string matching
+    match_type: exact
+    
+    # Rewards for different outcomes
+    match_reward: 1.0        # Perfect match
+    mismatch_reward: 0.0     # No match
+    partial_match_reward: 0.0  # No partial credit (only exact match counts)
+
+# Training configuration (if used for RL training)
+trainer:
+  # Algorithm: PPO, DPO, etc.
+  algorithm: ppo
+  
+  # Training parameters
+  batch_size: 32
+  num_epochs: 3
+  learning_rate: 1e-5
+  
+  # PPO specific
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_ratio: 0.2
+
+# Logging configuration
+logging:
+  # Log level
+  level: INFO
+  
+  # Log directory
+  log_dir: ./logs/multiturn_dialog
+  
+  # Log frequency (steps)
+  log_freq: 100
+  
+  # Whether to log to file
+  log_to_file: true
+
+# Experiment configuration
+experiment:
+  # Experiment name
+  name: multiturn_dialog_demo
+  
+  # Experiment description
+  description: "Multi-turn dialog interaction with SGLang rollout"
+  
+  # Random seed for reproducibility
+  seed: 42
+  
+  # Whether to use mixed precision
+  mixed_precision: fp16
+
+# Resource configuration
+resources:
+  # Number of GPUs
+  num_gpus: 1
+  
+  # GPU memory per process (GB)
+  gpu_memory_per_process: 20
+  
+  # CPU workers
+  num_cpu_workers: 4
+  
+  # Maximum retries for failed jobs
+  max_retries: 3
+
+# Advanced options
+advanced:
+  # Enable gradient accumulation
+  gradient_accumulation_steps: 1
+  
+  # Whether to use flash attention
+  use_flash_attention: true
+  
+  # Whether to enable activation checkpointing
+  enable_activation_checkpointing: false
+  
+  # Communication backend
+  communication_backend: nccl
+

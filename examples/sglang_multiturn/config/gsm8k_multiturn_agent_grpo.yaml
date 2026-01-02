@@ -1,0 +1,26 @@
+hydra:
+  searchpath:
+    - file://verl/trainer/config
+
+defaults:
+  - ppo_trainer
+  - _self_
+
+data:
+  max_prompt_length: 2048
+  max_response_length: 1024
+  train_batch_size: 64
+  return_raw_chat: True
+
+actor_rollout_ref:
+  hybrid_engine: True
+  rollout:
+    name: sglang
+    multi_turn:
+      enable: True
+      max_assistant_turns: 10  # Allow multiple turns for multiple questions
+      use_inference_chat_template: true
+      tokenization_sanity_check_mode: null
+
+# Multiturn Agent format specific settings
+# All questions are in the initial prompt, agent generates multiple answers
