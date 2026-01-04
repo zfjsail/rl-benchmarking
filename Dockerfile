@@ -3,7 +3,7 @@
 FROM python:3.12-slim
 
 # 2. 设置工作目录
-WORKDIR /app/rl-benchmarking
+WORKDIR /app/verl
 
 # 3. 设置环境变量 (防止 Python 生成 .pyc 文件，并让日志直接输出)
 ENV PYTHONDONTWRITEBYTECODE=1
