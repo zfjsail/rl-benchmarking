@@ -3,9 +3,9 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import PeftModel
 
 # ====== 配置 ======
-base_model_path = "/workspace/pangyunhe/models/custom/qwen3-8b-multiturn"
-lora_model_path = "outputs/multiturn_grpo_v4/global_step_800/actor/lora_adapter"
-output_path = "rl"
+base_model_path = "/workspace/pangyunhe/models/Qwen/Qwen3-8B"
+lora_model_path = "outputs/sft_turn20/global_step_140/huggingface/lora_adapter"
+output_path = "lora"
 
 torch_dtype = torch.float16  # 或 bfloat16 / float32
 device_map = "auto"
@@ -18,7 +18,7 @@ def main():
         trust_remote_code=True
     )
 
-    # 2. 加载 base model
+    # 2. 加载 base model 
     base_model = AutoModelForCausalLM.from_pretrained(
         base_model_path,
         torch_dtype=torch_dtype,
