@@ -60,4 +60,9 @@ for step in {10..50..10}; do
     CUDA_VISIBLE_DEVICES=4,5 python inf_and_metric.py --model_name base_model --lora_path outputs/multiturn_grpo_v5/global_step_50/actor/lora_adapter --tensor_parallel_size 2 --batch_size 32  --save_dir outputs/multiturn_grpo_v5/eval.txt
 done
 ```
+### Target Metrics in Training
+`val-aux/multiturnnd/turn_reward/mean@1`, `val-aux/multiturnnd/final_reward/mean@1`, `val-aux/multiturnnd/score/mean@1`
 
+`score = 0.5*turn_reward+0.5*final_reward`
+
+Example good logs: https://wandb.ai/pang936597452/multiturn_grpo_v2/runs/b00ymr7h?nw=nwuserpang936597452
