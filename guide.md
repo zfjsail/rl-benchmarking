@@ -25,3 +25,17 @@ put the ``crossnd`` directory into ``$project_dir/data/`` (access via ``$project
 ```bash
 bash ./examples/grpo_trainer/run_multiturn_grpo_v4.sh
 ```
+
+### Distributed RL
+
+```bash
+# ray的启动是：
+# Head节点（第一个节点）：
+bashray start --head --port=6379 && sleep infinity
+# Worker节点（第二个节点）：
+bashray start --address=<head_node_ip>:6379 && sleep infinity
+
+# 然后直接在head节点执行入口指令：
+bash examples/grpo_trainer/run_multiturn_grpo_v4_distributed.sh
+```
+
