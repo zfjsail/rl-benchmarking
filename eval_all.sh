@@ -1,7 +1,7 @@
 
 # CUDA_VISIBLE_DEVICES=0,1,2,3 python inf_and_metric.py --model_name base_model --lora_path outputs/multiturn_grpo_v4/global_step_${step}/actor/lora_adapter --tensor_parallel_size 2 --batch_size 32 --save_dir outputs/multiturn_grpo_v4_v4.txt
 
-    CUDA_VISIBLE_DEVICES=4,5 python inf_and_metric.py --model_name base_model --lora_path outputs/multiturn_grpo_v5/global_step_50/actor/lora_adapter --tensor_parallel_size 2 --batch_size 32  --save_dir outputs/multiturn_grpo_v5/eval.txt
+    # CUDA_VISIBLE_DEVICES=4,5 python inf_and_metric.py --model_name base_model --lora_path outputs/multiturn_grpo_v5/global_step_50/actor/lora_adapter --tensor_parallel_size 2 --batch_size 32  --save_dir outputs/multiturn_grpo_v5/eval.txt
 
 # for step in {50..550..100}; do
 #     echo "Evaluating step: $step"
@@ -17,3 +17,10 @@
 #     # CUDA_VISIBLE_DEVICES=6,7 python inf_and_metric.py --model_name /workspace/pangyunhe/models/custom/qwen3-8b-multiturn --tensor_parallel_size 1 --batch_size 64 --save_dir outputs/basemodel.txt
 # done
 # # CUDA_VISIBLE_DEVICES=6,7 python inf_and_metric.py --model_name /workspace/pangyunhe/models/custom/qwen3-8b-multiturn --tensor_parallel_size 2 --batch_size 64 --save_dir outputs/basemodel.txt
+
+
+python merge.py --base_model_path /workspace/pangyunhe/models/Qwen/qwen3_wo_label --lora_model_path /workspace/pangyunhe/project/crossnd/llm/output/kddcup/hybrid_thr07_cls_turnschedular_label/checkpoint-450 --output_path /workspace/pangyunhe/models/custom_qwen_token
+
+CUDA_VISIBLE_DEVICES=2 python inf_and_metric.py --model_name /workspace/pangyunhe/models/custom_qwen_token  --tensor_parallel_size 1 --batch_size 16 --save_dir /workspace/pangyunhe/project/crossnd/llm/output/kddcup/hybrid_thr07_cls_turnschedular_label/res.txt
+# python merge.py --base_model_path /workspace/pangyunhe/models/Qwen/Qwen3-8B --lora_model_path /workspace/pangyunhe/project/crossnd/llm/output/kddcup/gen_label/checkpoint-100 --output_path /workspace/pangyunhe/models/custom_qwen
+# CUDA_VISIBLE_DEVICES=4,5,6,7 python inf_and_metric.py --model_name /workspace/pangyunhe/models/custom_qwen  --tensor_parallel_size 4 --batch_size 128 --save_dir /workspace/pangyunhe/project/crossnd/llm/output/kddcup/gen_label//res.txt
