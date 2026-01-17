@@ -1,14 +1,22 @@
 
 set -x
-cd /workspace/pangyunhe/project/crossnd/verl  # cd项目
 
 ulimit -n 65535
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# 获取脚本所在目录，然后回到项目根目录
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_DIR="$(cd "$SCRIPT_DIR/../.." && pwd)"
+cd "$PROJECT_DIR"
 CONFIG_PATH="$PROJECT_DIR/examples/sglang_multiturn/config"
 
 TRAIN_BATCH_SIZE=${TRAIN_BATCH_SIZE:-32}
 MICRO_BATCH_SIZE=${MICRO_BATCH_SIZE:-2}
 OFFLOAD=${OFFLOAD:-False}
+
+export WANDB_MODE=offline
+export WANDB_API_KEY=offline
+export WANDB_DIR=wandb/
+mkdir -p wandb/
 
 python3 -m verl.trainer.main_ppo \
     algorithm.adv_estimator=grpo \
@@ -32,7 +40,7 @@ python3 -m verl.trainer.main_ppo \
     actor_rollout_ref.rollout.agent.default_agent_loop='tool_agent' \
     actor_rollout_ref.rollout.calculate_log_probs=True \
     actor_rollout_ref.rollout.enable_prefix_caching=True \
-    actor_rollout_ref.model.path=/workspace/pangyunhe/models/custom/qwen3-8b-multiturn \
+    actor_rollout_ref.model.path=${MODEL_PATH:-/workspace/pangyunhe/models/custom/qwen3-8b-multiturn} \
     actor_rollout_ref.model.use_remove_padding=True \
     actor_rollout_ref.model.enable_gradient_checkpointing=True \
     actor_rollout_ref.actor.optim.lr=1e-6 \
@@ -59,8 +67,8 @@ python3 -m verl.trainer.main_ppo \
     +actor_rollout_ref.rollout.engine_kwargs.vllm.max_logprobs=1000 \
     actor_rollout_ref.rollout.gpu_memory_utilization=0.4 \
     actor_rollout_ref.rollout.n=8 \
-    actor_rollout_ref.rollout.trace.backend='weave' \
-    actor_rollout_ref.rollout.trace.token2text=True \
+    actor_rollout_ref.rollout.trace.backend=null \
+    actor_rollout_ref.rollout.trace.token2text=False \
     actor_rollout_ref.ref.log_prob_micro_batch_size_per_gpu=$MICRO_BATCH_SIZE \
     actor_rollout_ref.ref.fsdp_config.param_offload=$OFFLOAD \
     actor_rollout_ref.actor.checkpoint.save_contents='["optimizer", "extra"]' \
@@ -68,17 +76,17 @@ python3 -m verl.trainer.main_ppo \
     trainer.critic_warmup=0 \
     trainer.default_local_dir=outputs/multiturn_grpo_v4_distributed \
     trainer.val_before_train=False \
-    trainer.logger='["console","wandb"]' \
+    trainer.logger='["console"]' \
     trainer.project_name='multiturn_grpo_v2' \
     trainer.experiment_name='multiturn_grpo_v2' \
     trainer.n_gpus_per_node=8 \
     trainer.nnodes=2 \
     trainer.save_freq=50 \
     trainer.test_freq=50 \
-    data.train_files=$PROJECT_DIR/verl/data/crossnd/train.parquet \
-    data.val_files=$PROJECT_DIR/verl/data/crossnd/valid.parquet \
+    data.train_files=$PROJECT_DIR/data/crossnd/train.parquet \
+    data.val_files=$PROJECT_DIR/data/crossnd/valid.parquet \
     trainer.total_epochs=8 \
-    custom_reward_function.path=$PROJECT_DIR/verl/verl/utils/reward_score/multiturnnd.py \
+    custom_reward_function.path=$PROJECT_DIR/verl/utils/reward_score/multiturnnd.py \
     custom_reward_function.name=compute_score \
     '+custom_reward_function.reward_kwargs={}' $@
 
